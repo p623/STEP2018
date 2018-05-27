@@ -16,9 +16,8 @@ l.sort()
 #辞書にある全ての単語について"q","u"の入力を"qu"にする
 dictionaryWords=open("dictionary.words.txt","r")
 for line in dictionaryWords:
-    k=list(line)
-    #なぜか出てきた"\n"を消す(なんで出てきたか分からない)
-    del k[len(k)-1]
+    #rstripで変な空白を消す
+    k=list(line.rstrip())
     m=0
     while m<len(k):
         if k[m]=="q":
@@ -34,10 +33,9 @@ for line in dictionaryWords:
         K.lower
         A+=K
         #単語Aのそれぞれの文字が何ポイント得られるのか計算
-        if K=="j" or K=="k" or K=="qu" or K=="x" or K=="z":
-            pt+=3
-        elif K=="c" or K=="f" or K=="h" or K=="l" or K=="m" or K=="p" or K=="v" or K=="w" or K=="y":
-            pt+=2
+        forpt={"j":3,"k":3,"qu":3,"x":3,"z":3,"c":2,"f":2,"h":2,"l":2,"m":2,"p":2,"v":2,"w":2,"y":2}
+        if K in forpt:
+            pt+=forpt[K]
         else:
             pt+=1
     #単語Aに含まれている文字をアルファベット順にする   
@@ -49,13 +47,16 @@ for line in dictionaryWords:
         li.append(lis)
     #単語Aに含まれている文字が入力した文字群(l)に含まれているか
     #それぞれアルファベット順に並べているのでFalseの時、早めにFalseと決まる(?)
+    #xを使うことでlにある数だけ、重複してる文字を使えるようになった(と思う)
+    x=0
     for moji in k:
         if moji in li:
-            if moji==k[len(k)-1]:
+            x+=1
+            if x==len(k):
                 Ans.append(A)
                 point.append(((pt+1)*(pt+1)))
             else:
-                #これでlにある数だけ複数ある文字を使えるようにしたかったのだけど、ちゃんと動いてない(よく分かってない)
+                
                 li.remove(moji)
         else:
             break
