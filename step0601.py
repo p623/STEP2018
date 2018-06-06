@@ -18,9 +18,6 @@ for i in range(n):
 
 begin = time.time()
 
-print(a)
-print(b)
-
 def sigma(frm,to,i,j):
     result=0
     for l in range(frm, to):
@@ -31,7 +28,6 @@ def sigma(frm,to,i,j):
 for i in range(n):
     for j in range(n):
         c[i,j]=sigma(0,n,i,j)
-print(c)
 
 end = time.time()
 print("time: %.6f sec" % (end - begin))
