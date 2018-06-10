@@ -58,20 +58,21 @@ def evaluate(tokens):
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':
             if tokens[index - 1]['type'] == 'KAKERU':
-                tokens[index]["number"]=tokens[index-2]["number"]*tokens[index]["number"]
-                del tokens[index-1]
+                tokens[index]["number"]=tokens[index-2]["number"]*tokens[index]["number"] #[4][*][2]=[null][null][8]に
+                del tokens[index-1] #上の[null][null]を消去
                 del tokens[index-2]
-                index=1
+                index=1 #tokensの要素数を減らしてしまったのでindexの初期化
+
             elif tokens[index - 1]['type'] == 'WARU':
-                tokens[index]["number"]=tokens[index-2]["number"]/tokens[index]["number"]
-                del tokens[index-1]
+                tokens[index]["number"]=tokens[index-2]["number"]/tokens[index]["number"] #[4][/][2]=[null][null][2]に
+                del tokens[index-1] #上の[null][null]を消去
                 del tokens[index-2]
-                index=1
+                index=1 #tokensの要素数を減らしてしまったのでindexの初期化
             else:
                 pass
         index += 1
 
-    index = 1
+    index = 1 #tokensの[*][/]の処理が終わったところで[+][-]の処理を開始
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':
             if tokens[index - 1]['type'] == 'PLUS':
