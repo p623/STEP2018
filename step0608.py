@@ -79,22 +79,20 @@ def evaluateKakko(tokens):
             break
         else:
             tokensForKakko=[]#括弧の中身の計算のためのtokens
-            a=max(startKakkoIndex)#より内側の括弧から計算するためのa,bを考える
+            calculateStartKakko=max(startKakkoIndex)#より内側の括弧から計算するためのa,bを考える
             for element in finishKakkoIndex:#一番後ろの(から始まる()の計算をするために一番後ろの(のちょっと後ろのIndexの)を探す
-                if element-a>0:
-                    finishKakkoIndexMinusA.append(element-a)
-            b=min(finishKakkoIndexMinusA)+a
-            indexForKakko=a+1
-            while indexForKakko < b:#目的の括弧の中身をtokensForKakkoに追加
+                if element-calculateStartKakko>0:
+                    finishKakkoIndexMinusA.append(element-calculateStartKakko)
+            calculateFinishKakko=min(finishKakkoIndexMinusA)+calculateStartKakko
+            indexForKakko=calculateStartKakko+1
+            while indexForKakko < calculateFinishKakko:#目的の括弧の中身をtokensForKakkoに追加
                 tokensForKakko.append(tokens[indexForKakko])
                 indexForKakko+=1
             #tokensForKakkoの中身に対して四則演算を実行、)の一つ前のtokensの要素をその値で更新
-            tokens[b-1]["number"]=evaluatePlusAndMinus(evaluateMultiplyAndDivide(tokensForKakko)) #[(][2][-][1][)]=[(][null][null][1][)]に
+            tokens[calculateFinishKakko-1]["number"]=evaluatePlusAndMinus(evaluateMultiplyAndDivide(tokensForKakko)) #[(][2][-][1][)]=[(][null][null][1][)]に
             #[(][null][null]と[)]の消去
-            del tokens[a:b-1]
-            del tokens[a+1]
-            startKakkoIndex.remove(a)
-            finishKakkoIndex.remove(b)
+            del tokens[calculateStartKakko:calculateFinishKakko-1]
+            del tokens[calculateStartKakko+1]
     return tokens
 
 
@@ -167,6 +165,18 @@ def runTest():
     test("4*(2-1)",4)
     test("(3+4*(2-1))/5",1.4)
     test("(3+4*(2-1)+(4+2)/2)/5",2)
+    test("(1)",1)
+    test("(1+2)",3)
+    test("2*(3+4)",14)
+    test("(2+3)*4",20)
+    test("((1))",1)
+    test("((1+2)*(3+4))",21)
+    test("(1+2)*(3+4)",21)
+    test("1-(2-3)",2)
+    test("1-(2-(3-4))",-2)
+    test("1-(2-(3-(4-5)))",3)
+    test("1-(2-(3-(4-5)-6))",-3)
+    test("1-(2-(3-(4-5)-6)-7)",4)
     print("==== Test finished! ====\n")
 
 runTest()
