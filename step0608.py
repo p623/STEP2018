@@ -13,11 +13,9 @@ def readNumber(line, index):
     token = {'type': 'NUMBER', 'number': number * keta}
     return token, index
 
-
 def readPlus(line, index):
     token = {'type': 'PLUS'}
     return token, index + 1
-
 
 def readMinus(line, index):
     token = {'type': 'MINUS'}
@@ -29,6 +27,14 @@ def readMultiply(line, index):
 
 def readDivide(line, index):
     token = {'type': 'DIVIDE'}
+    return token, index + 1
+
+def readStartKakko(line,index):
+    token = {'type': 'START'}
+    return token, index + 1
+
+def readFinishKakko(line,index):
+    token = {'type': 'FINISH'}
     return token, index + 1
 
 def tokenize(line):
@@ -45,11 +51,52 @@ def tokenize(line):
             (token, index) = readMultiply(line, index)
         elif line[index] == '/':
             (token, index) = readDivide(line, index)
+        elif line[index] == '(':
+            (token, index) = readStartKakko(line, index)
+        elif line[index] == ')':
+            (token, index) = readFinishKakko(line, index)
         else:
             print('Invalid character found: ' + line[index])
             exit(1)
         tokens.append(token)
     return tokens
+
+def evaluateKakko(tokens):
+    while True:
+        index=0#"("と")"がどこにあるのかその都度調べる
+        startKakkoIndex=[]
+        finishKakkoIndex=[]
+        finishKakkoIndexMinusA=[]
+        while index < len(tokens):
+            if tokens[index]["type"]=="START":
+                startKakkoIndex.append(index)
+            elif tokens[index]["type"]=="FINISH":
+                finishKakkoIndex.append(index)
+            else:
+                pass
+            index+=1
+        if startKakkoIndex==[] or finishKakkoIndex==[]:#括弧がない時にはbreak
+            break
+        else:
+            tokensForKakko=[]#括弧の中身の計算のためのtokens
+            a=max(startKakkoIndex)#より内側の括弧から計算するためのa,bを考える
+            for element in finishKakkoIndex:#一番後ろの(から始まる()の計算をするために一番後ろの(のちょっと後ろのIndexの)を探す
+                if element-a>0:
+                    finishKakkoIndexMinusA.append(element-a)
+            b=min(finishKakkoIndexMinusA)+a
+            indexForKakko=a+1
+            while indexForKakko < b:#目的の括弧の中身をtokensForKakkoに追加
+                tokensForKakko.append(tokens[indexForKakko])
+                indexForKakko+=1
+            #tokensForKakkoの中身に対して四則演算を実行、)の一つ前のtokensの要素をその値で更新
+            tokens[b-1]["number"]=evaluatePlusAndMinus(evaluateMultiplyAndDivide(tokensForKakko)) #[(][2][-][1][)]=[(][null][null][1][)]に
+            #[(][null][null]と[)]の消去
+            del tokens[a:b-1]
+            del tokens[a+1]
+            startKakkoIndex.remove(a)
+            finishKakkoIndex.remove(b)
+    return tokens
+
 
 def evaluateMultiplyAndDivide(tokens):
     tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
@@ -94,7 +141,7 @@ def evaluatePlusAndMinus(tokens):
 
 def test(line, expectedAnswer):
     tokens = tokenize(line)
-    actualAnswer = evaluatePlusAndMinus(evaluateMultiplyAndDivide(tokens))
+    actualAnswer = evaluatePlusAndMinus(evaluateMultiplyAndDivide(evaluateKakko(tokens)))
     if abs(actualAnswer - expectedAnswer) < 1e-8:
         print("PASS! (%s = %f)" % (line, expectedAnswer))
     else:
@@ -116,6 +163,10 @@ def runTest():
     test("0-3*2+4/2-5.0-6.0/2+72/2.0",24)
     test("2",2)
     test("3/0-2+3*4+6*2",0)
+    test("",0)
+    test("4*(2-1)",4)
+    test("(3+4*(2-1))/5",1.4)
+    test("(3+4*(2-1)+(4+2)/2)/5",2)
     print("==== Test finished! ====\n")
 
 runTest()
@@ -124,5 +175,5 @@ while True:
     print('> ',)
     line = input()
     tokens = tokenize(line)
-    answer=evaluatePlusAndMinus(evaluateMultiplyAndDivide(tokens))
+    answer=evaluatePlusAndMinus(evaluateMultiplyAndDivide(evaluateKakko(tokens)))
     print("answer = %f\n" % answer)
