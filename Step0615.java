@@ -6,12 +6,12 @@ import java.lang.Integer;
 
 public class Step0615{
     public static void main(String[] args){
-    //Scanner scanner =new Scanner(System.in);
-       // System.out.println("類似性を調べたい単語を入力してください(単語1): ");
-        //String inputWord1= scanner.next();
+        Scanner scanner =new Scanner(System.in);
+        System.out.println("調べたい単語を入力してください: ");
+        String inputWord= scanner.next();
         //System.out.println("類似性を調べたい単語を入力してください(単語2): ");
         //String inputWord2=scanner.next();
-       int inputWordIndex=wikiWordsSearch("日本語");
+       int inputWordIndex=wikiWordsSearch(inputWord);
        relatedWordsSearch(inputWordIndex);
 
 
