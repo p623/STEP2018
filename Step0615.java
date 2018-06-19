@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.lang.Integer;
+import java.lang.System;
 
 public class Step0615{
     public static void main(String[] args){
@@ -31,7 +32,7 @@ public class Step0615{
         ArrayList<String> wikiWords = new ArrayList<String>();
         try{
             Scanner scanner = new Scanner(new File("pages.txt"));
-            System.out.println("read File");
+            System.out.println("open File, 'pages.txt'");
             while(scanner.hasNextLine()){
                 String pageLine =scanner.nextLine();
                 String[] indexWikiWord =pageLine.split("\t");
@@ -39,7 +40,7 @@ public class Step0615{
             }
             System.out.println("finish make wikiWords");
         } catch (FileNotFoundException e){
-            System.out.println("can't read File");
+            System.out.println("can't open File, 'pages.txt'");
             }
         return wikiWords;
         // # wikiWords=['アンパサンド', '言語', '日本語',...]    
@@ -65,32 +66,37 @@ public class Step0615{
             ArrayList<String> nullList =new ArrayList<String>();
             return nullList;
         }else{
-            ArrayList<Integer> wordIndexs = new ArrayList<Integer>();
-            ArrayList<Integer> wikiLinks = new ArrayList<Integer>();
+            int wordIndexs[] = new int[60000000];
+            int wikiLinks[] = new int[60000000];
             ArrayList<String> relatedWords = new ArrayList<String>();
             ArrayList<String> wikiWords = readWikiWords();
             try{
-                Scanner scanner = new Scanner(new File("links2.txt"));
-                System.out.println("Read File");
+                Scanner scanner = new Scanner(new File("links.txt"));
+                System.out.println("open File, 'links.txt'");
+                int numberForWikiLinks=0;
                 while(scanner.hasNextLine()){
+                    //long before = System.nanoTime();
                     String linkLine =scanner.nextLine();
                     String[] wordIndexWikiLink = linkLine.split("\t");
-                    wordIndexs.add(Integer.valueOf(wordIndexWikiLink[0]));
-                    wikiLinks.add(Integer.valueOf(wordIndexWikiLink[1]));
+                    wordIndexs[numberForWikiLinks]=Integer.valueOf(wordIndexWikiLink[0]);
+                    wikiLinks[numberForWikiLinks]=Integer.valueOf(wordIndexWikiLink[1]);
+                    numberForWikiLinks++;
+                    //long after = System.nanoTime();
+                    //System.out.println((after - before));
                     // #wordIndexs=[0,0,0,...]
                     // #WikiLinks=[284171, 955, 591, ...]
                 }
                 
             }catch(FileNotFoundException e){
-                System.out.println("can't read File");
+                System.out.println("can't read File, 'links.txt'");
             }
-            System.out.println("Finish reading File");
+            System.out.println("Finish reading File, 'links.txt'");
             int paramForWordIndexs = 0;
-            while (paramForWordIndexs < wordIndexs.size()) {
-                if (wordIndexs.get(paramForWordIndexs) > inputWordIndex) {
+            while (paramForWordIndexs < wordIndexs.length) {
+                if (wordIndexs[paramForWordIndexs] > inputWordIndex) {
                     break;
-                } else if (wordIndexs.get(paramForWordIndexs) == inputWordIndex) {
-                    relatedWords.add(wikiWords.get(wikiLinks.get(paramForWordIndexs)));
+                } else if (wordIndexs[paramForWordIndexs] == inputWordIndex) {
+                    relatedWords.add(wikiWords.get(wikiLinks[paramForWordIndexs]));
                 }
                 paramForWordIndexs++;
             }
