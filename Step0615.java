@@ -18,12 +18,8 @@ public class Step0615{
         ArrayList<Integer> relatedWordsIndex=relatedWordsSearch(inputWordIndex);
         ArrayList<Integer> reRelatedWords=reRelatedWordsSearch(relatedWordsIndex);
         double percent=reRelatedPerRelated(relatedWordsIndex,reRelatedWords);
-        System.out.println(percent);
-
-
-        //double relationship = evaluateRelationship(relatedWords1,relatedWords2);
-        //System.out.println("--------------------------------------------------");
-        //System.out.println("類似性は"+relationship+"%です");
+        System.out.println("--------------------------------------------------");
+        System.out.println(inputWord+"の'友達の友達'に含まれる'友達'の割合は"+ percent+"%です");
 
     }
 
@@ -39,7 +35,6 @@ public class Step0615{
                 wikiWords[paramForWikiWords]=indexWikiWord[1];
                 paramForWikiWords++;
             }
-            System.out.println("finish make wikiWords");
         } catch (FileNotFoundException e){
             System.out.println("can't open File, 'pages.txt'");
             }
@@ -92,7 +87,6 @@ public class Step0615{
             }catch(FileNotFoundException e){
                 System.out.println("can't read File, 'links.txt'");
             }
-            System.out.println("Finish reading File, 'links.txt'");
             int paramForWordIndexs = 0;
             int paramForRelatedWordsIndex=0;
             while (paramForWordIndexs < wordIndexs.length) {
@@ -110,7 +104,6 @@ public class Step0615{
             System.out.println(Arrays.asList(relatedWords));
             Collections.sort(relatedWordsIndex);
             return relatedWordsIndex;
-            //ここまでおっけい
         }
     
     }
