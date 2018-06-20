@@ -167,7 +167,7 @@ public class Step0615{
                 matchedCount++;
             }
         }
-        return 100*matchedCount/ reRelatedWords.size();
+        return (double)matchedCount*100/ reRelatedWords.size();
     }
 
 
